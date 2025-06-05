@@ -6,6 +6,7 @@ This project is a backend service that fetches historical weather data from the 
 
 - [Installation](#installation)
 - [Deployment](#deployment)
+- [API Documentation (Swagger UI)](#api-documentation-swagger-ui)
 - [API Endpoints](#api-endpoints)
 
 ## Installation
@@ -38,16 +39,28 @@ To deploy the application on Google Cloud Run, follow these steps:
 
 2. Deploy the image to Google Cloud Run (Cloud Build will push the image automatically):
    ```
-   gcloud run deploy weather-backend \
-     --image gcr.io/<your-project-id>/weather-backend \
-     --platform managed \
-     --region <your-region> \
-     --allow-unauthenticated \
-     --set-env-vars GCS_BUCKET_NAME=open_meteo_weather_bucket,OPEN_METEO_API_URL=https://api.open-meteo.com/v1/forecast
+   gcloud run deploy weather-backend --image gcr.io/weather-task-461909/weather-backend --platform managed --region asia-south1 --allow-unauthenticated --set-env-vars GCS_BUCKET_NAME=open_meteo_weather_bucket,OPEN_METEO_API_URL=https://api.open-meteo.com/v1/forecast
    ```
    Replace `<your-project-id>` and `<your-region>` with your actual GCP project ID and region (e.g., `asia-south1`).
 
 3. Follow the prompts to set the service name, region, and allow unauthenticated invocations if desired.
+
+## API Documentation (Swagger UI)
+
+This service provides an interactive API documentation using **Swagger UI**.
+
+After deploying to Google Cloud Run, you can access the Swagger UI at:
+
+```
+https://<your-cloud-run-service-url>/swagger/
+```
+
+Replace `<your-cloud-run-service-url>` with the actual URL provided by Cloud Run after deployment (e.g., `https://weather-backend-xxxxxx-uc.a.run.app/swagger/`).
+
+**With Swagger UI, you can:**
+- Explore all available API endpoints
+- View request and response formats
+- Interactively test the API directly from your browser
 
 ## API Endpoints
 
