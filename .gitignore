@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+
+# Environment variables
+.env
+
+# VSCode settings
+.vscode/
+
+# Service account keys and sensitive files
+*.json
+!src/**/*.py
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
