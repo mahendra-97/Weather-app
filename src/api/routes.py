@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from src.services.meteo_service import fetch_weather_data
@@ -25,7 +26,7 @@ def restructure_weather_data(weather_data):
             "apparent_temperature_min": daily['apparent_temperature_min'][i],
             "apparent_temperature_mean": daily['apparent_temperature_mean'][i],
         }
-    return {"data": data}
+    return data
 
 @api.route('/store-weather-data')
 class StoreWeatherData(Resource):
@@ -37,9 +38,11 @@ class StoreWeatherData(Resource):
         start_date = data.get('start_date')
         end_date = data.get('end_date')
         if not all([latitude, longitude, start_date, end_date]):
-            return {'error': 'Missing required parameters'}, 400
+            return {'error': 'Missing required parameters'}, HTTPStatus.BAD_REQUEST
         try:
             weather_data = fetch_weather_data(latitude, longitude, start_date, end_date)
+            if not weather_data or 'daily' not in weather_data:
+                return {'error': 'Failed to fetch weather data'}, HTTPStatus.BAD_GATEWAY
             structured_data = restructure_weather_data(weather_data)
             structured_data['meta'] = {
                 'latitude': latitude,
@@ -48,24 +51,28 @@ class StoreWeatherData(Resource):
                 'end_date': end_date
             }
             file_name = store_weather_data(structured_data)
-            return {'message': 'Weather data stored successfully', 'file_name': file_name}, 201
+            return {'message': 'Weather data stored successfully', 'file_name': file_name}, HTTPStatus.CREATED
         except Exception as e:
-            return {'error': str(e)}, 500
+            return {'error': str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 @api.route('/list-weather-files')
 class ListWeatherFiles(Resource):
     def get(self):
         try:
             files = list_weather_files()
-            return {'files': files}, 200
+            return {'message': 'Weather files retrieved successfully', 'files': files}, HTTPStatus.OK
         except Exception as e:
-            return {'error': str(e)}, 500
+            return {'error': str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 @api.route('/weather-file-content/<string:file_name>')
 class WeatherFileContent(Resource):
     def get(self, file_name):
         try:
             content = get_weather_file_content(file_name)
-            return content, 200
+            if content is None:
+                return {'error': 'File not found'}, HTTPStatus.NOT_FOUND
+            return {'message': 'Weather file content retrieved successfully', 'data': content}, HTTPStatus.OK    
+        except FileNotFoundError:
+            return {'error': 'File not found'}, HTTPStatus.NOT_FOUND
         except Exception as e:
-            return {'error': str(e)}, 500
+            return {'error': str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR

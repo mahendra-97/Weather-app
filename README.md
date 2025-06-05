@@ -12,7 +12,7 @@ This project is a backend service that fetches historical weather data from the 
 
 1. Clone the repository:
    ```
-   git clone <repository-url>
+   git clone https://github.com/mahendra-97/Weather-app
    cd weather-backend
    ```
 
@@ -36,17 +36,18 @@ To deploy the application on Google Cloud Run, follow these steps:
    docker build -t gcr.io/<your-project-id>/weather-backend .
    ```
 
-2. Push the Docker image to Google Container Registry:
+2. Deploy the image to Google Cloud Run (Cloud Build will push the image automatically):
    ```
-   docker push gcr.io/<your-project-id>/weather-backend
+   gcloud run deploy weather-backend \
+     --image gcr.io/<your-project-id>/weather-backend \
+     --platform managed \
+     --region <your-region> \
+     --allow-unauthenticated \
+     --set-env-vars GCS_BUCKET_NAME=open_meteo_weather_bucket,OPEN_METEO_API_URL=https://api.open-meteo.com/v1/forecast
    ```
+   Replace `<your-project-id>` and `<your-region>` with your actual GCP project ID and region (e.g., `asia-south1`).
 
-3. Deploy the image to Google Cloud Run:
-   ```
-   gcloud run deploy weather-backend --image gcr.io/<your-project-id>/weather-backend --platform managed
-   ```
-
-4. Follow the prompts to set the service name, region, and allow unauthenticated invocations if desired.
+3. Follow the prompts to set the service name, region, and allow unauthenticated invocations if desired.
 
 ## API Endpoints
 

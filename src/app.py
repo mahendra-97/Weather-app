@@ -1,3 +1,4 @@
+import os
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -7,7 +8,7 @@ from src.api import api as weather_ns
 
 def create_app():
     app = Flask(__name__)
-    
+
     # Load configuration from config.py
     app.config.from_object('src.config')
 
@@ -21,6 +22,8 @@ def create_app():
 
     return app
 
+app = create_app()
+
 if __name__ == '__main__':
-    app = create_app()
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    port = int(os.environ.get('PORT', 8080))
+    app.run(host='0.0.0.0', port=port, debug=True)
