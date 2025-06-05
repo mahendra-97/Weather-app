@@ -2,6 +2,11 @@
 
 **Live Demo:** [Swagger UI on Google Cloud Run](https://weather-backend-118898327753.asia-south1.run.app/swagger/)
 
+![alt text](images/image.png)
+
+![alt text](images/image-1.png)
+
+
 This project is a backend service that fetches historical weather data from the Open-Meteo Historical Weather API, stores the data in Google Cloud Storage (GCS), and provides an API for listing and retrieving stored weather data files.
 
 ## Table of Contents
@@ -78,18 +83,24 @@ Replace `<your-cloud-run-service-url>` with the actual URL provided by Cloud Run
     "end_date": "<YYYY-MM-DD>"
   }
   ```
+
+  ![alt text](images/image-2.png)
+
 - **Response**: Success message and file name.
+
+![alt text](images/image-3.png)
+
 
 ### GET /list-weather-files
 
 - **Description**: List all weather data files stored in GCS.
 - **Response**: JSON array of file names.
 
+![alt text](images/image-4.png)
+
 ### GET /weather-file-content/<file_name>
 
 - **Description**: Fetch and display the content of a specific JSON file stored in GCS.
 - **Response**: JSON content of the specified file.
 
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for more details.
+![alt text](images/image-5.png)
